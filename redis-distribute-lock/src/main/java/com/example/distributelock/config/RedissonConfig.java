@@ -14,11 +14,11 @@ import org.springframework.context.annotation.Bean;
 @SpringBootConfiguration
 public class RedissonConfig {
 
-    @Bean
+    /*@Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
         config.useSingleServer().setAddress("redis://127.0.0.1:6379");
         RedissonClient client = Redisson.create(config);
         return client;
-    }
+    }*/
 }
