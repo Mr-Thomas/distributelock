@@ -7,6 +7,7 @@
         <module>redis-distribute-lock</module>
         <module>zk-distribute-lock</module>
         <module>rate-limiter</module>
+        <module>rate-redis-lua-limiter</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
