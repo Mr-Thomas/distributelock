@@ -8,11 +8,12 @@
         <module>zk-distribute-lock</module>
         <module>rate-limiter</module>
         <module>rate-redis-lua-limiter</module>
+        <module>es-search</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.5.1</version>
+        <version>2.2.2.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>

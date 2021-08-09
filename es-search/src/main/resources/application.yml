@@ -1,0 +1,9 @@
+server:
+  port: 10010
+spring:
+  application:
+    name: elastic-search-server
+  data:
+    elasticsearch:
+      cluster-nodes: localhost:9300  #默认9300是节点间通信端口; 9200是支持Restful HTTP的接口; 集群节点地址列表，用逗号分隔
+      cluster-name: es6
