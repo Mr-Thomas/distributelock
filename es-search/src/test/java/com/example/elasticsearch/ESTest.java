@@ -122,11 +122,7 @@ public class ESTest {
                     stu.setDescription(hit.getSourceAsMap().get("description") + "");
                     list.add(stu);
                 }
-                if (CollectionUtils.isNotEmpty(list)) {
-                    AggregatedPage<Stu> aggregatedPage = new AggregatedPageImpl<Stu>(list);
-                    return (AggregatedPage<T>) aggregatedPage;
-                }
-                return null;
+                return (AggregatedPage<T>) new AggregatedPageImpl<>(list, pageable, hits.getTotalHits());
             }
 
             @Override
