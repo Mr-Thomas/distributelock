@@ -9,6 +9,7 @@
         <module>rate-limiter</module>
         <module>rate-redis-lua-limiter</module>
         <module>es-search</module>
+        <module>data-structures</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
