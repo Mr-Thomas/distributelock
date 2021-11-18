@@ -19,8 +19,11 @@ import org.springframework.test.context.junit4.SpringRunner;
 @SpringBootTest(classes = DateStructuresApplication.class)
 public class LinkedBinaryTest {
 
+    /**
+     * 二叉树基本实现
+     */
     @Test
-    public void test() {
+    public void BinaryTest() {
         //创建二叉树
         Node node5 = new Node(5, null, null);
         Node node4 = new Node(4, null, node5);
@@ -61,5 +64,109 @@ public class LinkedBinaryTest {
 
         //二叉树的节点数据量
         System.out.println("\n二叉树的节点数据量:" + btree.size());
+    }
+
+    /**
+     * 顺序查找
+     * 存储结构：可以是顺序表，也可以是链表
+     * 时间复杂度：T(n)=O(n)
+     * 空间复杂度：S(n)=O(1)
+     */
+    @Test
+    public void order2findTest() {
+        int[] scoreArr = {22, 44, 33, 88, 66, 99, 100};
+        int search = order2find(scoreArr, 33);
+        if (search == -1) {
+            System.out.println("分数不存在");
+        } else {
+            System.out.println("分数的索引：" + search);
+        }
+    }
+
+    private int order2find(int[] arr, int score) {
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] == score) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 前提：1、顺序存储结构；2、按照关键字有序
+     * 折半查找【折半二分查找】
+     * 时间复杂度：T(n)=O(log2n)
+     */
+    @Test
+    public void binarySearchTest() {
+        int[] scoreArr = {22, 33, 44, 55, 66, 77, 88};
+        //不使用递归
+        int search = binarySearch(scoreArr, 88);
+        //使用递归
+        int searchRecursive = binarySearchRecursive(scoreArr, 88);
+        if (search == -1) {
+            System.out.println("分数不存在");
+        } else {
+            System.out.println("分数的索引：" + search);
+        }
+    }
+
+    /**
+     * 使用递归
+     * 时间复杂度：T(n)=O(log2n)
+     * 空间复杂度：S(n)=O(log2n)
+     *
+     * @param arr
+     * @param score
+     * @return
+     */
+    private int binarySearchRecursive(int[] arr, int score) {
+        //指定low、high
+        int low = 0;
+        int high = arr.length - 1;
+        return binarySearchRecursive(arr, score, low, high);
+    }
+
+    private int binarySearchRecursive(int[] arr, int score, int low, int high) {
+        //递归结束条件
+        if (low > high) {
+            return -1;
+        }
+        int mid = (low + high) / 2;
+        if (score == arr[mid]) {
+            return mid;
+        } else if (score < arr[mid]) {
+            return binarySearchRecursive(arr, score, low, mid - 1);
+        } else {
+            return binarySearchRecursive(arr, score, mid + 1, high);
+        }
+    }
+
+    /**
+     * 不使用递归
+     * 时间复杂度：T(n)=O(log2n)
+     * 空间复杂度：S(n)=O(1)
+     *
+     * @param arr
+     * @param score
+     * @return
+     */
+    private int binarySearch(int[] arr, int score) {
+        //指定low、high
+        int low = 0;
+        int high = arr.length - 1;
+        //折半查找
+        while (low <= high) {
+            //取中间位置
+            int mid = (low + high) / 2;
+            if (score == arr[mid]) {
+                return mid;
+            } else if (score < arr[mid]) {
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return -1;
     }
 }
