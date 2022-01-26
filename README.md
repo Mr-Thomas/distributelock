@@ -15,3 +15,6 @@
 
 # zk-distribute-lock
   zookeeper瞬时节点实现分布式锁、curator客户端实现分布式锁
+  
+# message-MQ
+  rabbitMQ解决websocket集群问题
