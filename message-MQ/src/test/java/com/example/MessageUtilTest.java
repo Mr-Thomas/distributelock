@@ -25,6 +25,16 @@ public class MessageUtilTest {
     @Autowired
     private MessageUtil messageUtil;
 
+    @Test
+    public void peerMsg() {
+        messageUtil.sendMsg4Peer("3", JSONUtil.toJsonStr(new MessageStruct("peer message")));
+    }
+
+    @Test
+    public void channelMsg() {
+        messageUtil.sendMsg4Channel("123456789", JSONUtil.toJsonStr(new MessageStruct("channel message")));
+    }
+
     /**
      * 测试直接模式发送
      */

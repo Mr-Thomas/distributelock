@@ -1,5 +1,7 @@
 package com.example.rabbit;
 
+import com.example.rabbitHandler.ChannelMessageHandler;
+import com.example.rabbitHandler.PeerMessageHandler;
 import com.example.rabbitHandler.WebSocketHandler;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -39,6 +41,12 @@ public class RabbitMqConfig {
     private String port;
     @Autowired
     private WebSocketHandler webSocketHandler;
+
+    @Autowired
+    private PeerMessageHandler peerMessageHandler;
+
+    @Autowired
+    private ChannelMessageHandler channelMessageHandler;
 
     /*@Bean
     public RabbitTemplate rabbitTemplate(CachingConnectionFactory connectionFactory) {
@@ -223,5 +231,58 @@ public class RabbitMqConfig {
 //    @Bean
     public Binding delayBinding(Queue delayQueue, CustomExchange delayExchange) {
         return BindingBuilder.bind(delayQueue).to(delayExchange).with(RabbitConsts.DELAY_QUEUE).noargs();
+    }
+
+
+    @Bean
+    public Queue peerQueue() {
+        return new Queue(socketQueueSuffix(RabbitConsts.TOPIC_PEER_QUEUE));
+    }
+
+    @Bean
+    public TopicExchange topicPeerExchange() {
+        return new TopicExchange(RabbitConsts.TOPIC_PEER_EXCHANGE);
+    }
+
+    @Bean
+    public Binding topicPeerBinding(Queue peerQueue, TopicExchange topicPeerExchange) {
+        return BindingBuilder.bind(peerQueue).to(topicPeerExchange).with(RabbitConsts.TOPIC_PEER_ROUTING_KEY);
+    }
+
+
+    @Bean
+    public SimpleMessageListenerContainer peerSimpleMessageListenerContainer(CachingConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        container.setQueueNames(socketQueueSuffix(RabbitConsts.TOPIC_PEER_QUEUE));
+        container.setMessageListener(peerMessageHandler);
+        return container;
+    }
+
+
+    @Bean
+    public Queue channelQueue() {
+        return new Queue(socketQueueSuffix(RabbitConsts.TOPIC_CHANNEL_QUEUE));
+    }
+
+    @Bean
+    public TopicExchange topicChannelExchange() {
+        return new TopicExchange(RabbitConsts.TOPIC_CHANNEL_EXCHANGE);
+    }
+
+    @Bean
+    public Binding topicChannelBinding(Queue channelQueue, TopicExchange topicChannelExchange) {
+        return BindingBuilder.bind(channelQueue).to(topicChannelExchange).with(RabbitConsts.TOPIC_CHANNEL_ROUTING_KEY);
+    }
+
+    @Bean
+    public SimpleMessageListenerContainer channelSimpleMessageListenerContainer(CachingConnectionFactory connectionFactory) {
+        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        container.setAcknowledgeMode(AcknowledgeMode.MANUAL);
+        container.setQueueNames(socketQueueSuffix(RabbitConsts.TOPIC_CHANNEL_QUEUE));
+        container.setMessageListener(channelMessageHandler);
+        return container;
     }
 }

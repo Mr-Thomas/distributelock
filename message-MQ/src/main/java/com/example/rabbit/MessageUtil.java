@@ -25,6 +25,14 @@ public class MessageUtil implements RabbitTemplate.ReturnCallback, RabbitTemplat
         this.rabbitTemplate = rabbitTemplate;
     }
 
+    public void sendMsg4Peer(String trialNo, Object message) {
+        rabbitTemplate.convertAndSend(RabbitConsts.TOPIC_PEER_EXCHANGE, RabbitConsts.TOPIC_PEER_ROUTING_KEY.replace("#", trialNo), message, new CorrelationData(UUID.randomUUID().toString()));
+    }
+
+    public void sendMsg4Channel(String trialId, Object message) {
+        rabbitTemplate.convertAndSend(RabbitConsts.TOPIC_CHANNEL_EXCHANGE, RabbitConsts.TOPIC_CHANNEL_ROUTING_KEY.replace("#", trialId), message, new CorrelationData(UUID.randomUUID().toString()));
+    }
+
     public void sendMsg(String exchange, String routingKey, Object object) {
         rabbitTemplate.convertAndSend(exchange, routingKey, object, new CorrelationData(UUID.randomUUID().toString()));
     }

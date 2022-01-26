@@ -63,4 +63,23 @@ public interface RabbitConsts {
      * 延迟队列交换器
      */
     String DELAY_MODE_QUEUE = "delay.mode";
+
+    /**
+     * 点对点交换机
+     */
+    String TOPIC_PEER_EXCHANGE = "peer.exchange";
+    //点对点队列
+    String TOPIC_PEER_QUEUE = "peer.queue";
+    //点对点路由key
+    String TOPIC_PEER_ROUTING_KEY = "peer.#";
+
+    /**
+     * 频道交换机
+     */
+    String TOPIC_CHANNEL_EXCHANGE = "channel.exchange";
+    //频道队列
+    String TOPIC_CHANNEL_QUEUE = "channel.queue";
+    //频道路由key
+    String TOPIC_CHANNEL_ROUTING_KEY = "channel.#";
+
 }
