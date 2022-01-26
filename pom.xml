@@ -10,6 +10,7 @@
         <module>rate-redis-lua-limiter</module>
         <module>es-search</module>
         <module>data-structures</module>
+        <module>message-MQ</module>
     </modules>
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -33,6 +34,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>5.1.0</version>
         </dependency>
 
         <dependency>
