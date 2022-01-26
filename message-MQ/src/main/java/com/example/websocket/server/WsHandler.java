@@ -30,8 +30,6 @@ public class WsHandler extends TextWebSocketHandler {
 
     @Autowired
     private RedisUtil redisUtil;
-    @Autowired
-    private RabbitTemplate rabbitTemplate;
 
     /**
      * socket 建立成功事件
@@ -42,7 +40,7 @@ public class WsHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        WsSessionManager.WEB_SOCKET_SESSION_POOL.put(session.getAttributes().get("uid").toString(), session);
+        WsSessionManager.WEB_SOCKET_SESSION_POOL.put(session.getAttributes().get("trialId").toString() + "_" + session.getAttributes().get("trialNo").toString(), session);
         log.warn("与终端设备握手成功...");
     }
 
@@ -58,8 +56,7 @@ public class WsHandler extends TextWebSocketHandler {
         // 获得客户端传来的消息
         String payload = message.getPayload();
         log.info("server 送的String消息 {}", payload);
-//        rabbitTemplate.convertAndSend(RabbitConsts.DIRECT_MODE_QUEUE_ONE, new MessageStruct("direct message"));
-        session.sendMessage(new TextMessage(session.getAttributes().get("uid").toString()));
+        session.sendMessage(new TextMessage(session.getAttributes().get("trialNo").toString()));
     }
 
     @Override
@@ -78,7 +75,7 @@ public class WsHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-        redisUtil.del(session.getAttributes().get("uid").toString());
+        WsSessionManager.WEB_SOCKET_SESSION_POOL.remove(session.getAttributes().get("trialId").toString() + "_" + session.getAttributes().get("trialNo").toString());
     }
 
 }

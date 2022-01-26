@@ -1,6 +1,7 @@
 package com.example.rabbitHandler;
 
 import com.example.websocket.manager.WsSessionManager;
+import com.google.common.collect.Lists;
 import com.rabbitmq.client.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
@@ -9,6 +10,9 @@ import org.springframework.amqp.rabbit.listener.api.ChannelAwareMessageListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author :Administrator
@@ -28,9 +32,18 @@ public class WebSocketHandler implements ChannelAwareMessageListener {
             String routingKey = message.getMessageProperties().getReceivedRoutingKey();
             String msg = new String(message.getBody());
             log.info("WebSocketHandler==>Queue({})、RoutingKey({})收到消息:{}", consumerQueue, routingKey, msg);
-            WebSocketSession webSocketSession = WsSessionManager.WEB_SOCKET_SESSION_POOL.get(routingKey);
-            if (ObjectUtils.isNotEmpty(webSocketSession)) {
-                webSocketSession.sendMessage(new TextMessage(msg));
+            for (String key : WsSessionManager.WEB_SOCKET_SESSION_POOL.keySet()) {
+                List<String> list = Lists.newArrayList(key.split("_"));
+                if (list.contains(routingKey)) {
+                    WebSocketSession webSocketSession = WsSessionManager.WEB_SOCKET_SESSION_POOL.get(key);
+                    if (ObjectUtils.isNotEmpty(webSocketSession)) {
+                        if (webSocketSession.isOpen()) {
+                            webSocketSession.sendMessage(new TextMessage(msg));
+                        } else {
+                            WsSessionManager.WEB_SOCKET_SESSION_POOL.remove(key);
+                        }
+                    }
+                }
             }
             channel.basicAck(deliveryTag, false);
         } catch (Exception e) {

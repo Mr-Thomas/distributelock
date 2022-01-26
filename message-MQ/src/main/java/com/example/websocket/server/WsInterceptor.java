@@ -33,7 +33,8 @@ public class WsInterceptor implements HandshakeInterceptor {
     public boolean beforeHandshake(ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse, WebSocketHandler webSocketHandler, Map<String, Object> map) {
         log.info("握手开始...");
         Map<String, String> paramMap = HttpUtil.decodeParamMap(serverHttpRequest.getURI().getQuery(), "UTF-8");
-        map.put("uid", paramMap.get("uid"));
+        map.put("trialId", paramMap.get("trialId"));
+        map.put("trialNo", paramMap.get("trialNo"));
         return true;
     }
 

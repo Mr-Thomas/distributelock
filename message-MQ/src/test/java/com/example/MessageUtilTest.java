@@ -40,7 +40,7 @@ public class MessageUtilTest {
     @Test
     public void sendFanout() {
 //        messageUtil.sendMsg(RabbitConsts.FANOUT_MODE_QUEUE, "", JSONUtil.toJsonStr(new MessageStruct("fanout message")));
-        messageUtil.sendMsg(RabbitConsts.FANOUT_SOCKET_MODE_QUEUE, "123456789", JSONUtil.toJsonStr(new MessageStruct("fanout message")));
+        messageUtil.sendMsg(RabbitConsts.FANOUT_SOCKET_MODE_QUEUE, "1", JSONUtil.toJsonStr(new MessageStruct("fanout message")));
     }
 
     /**
