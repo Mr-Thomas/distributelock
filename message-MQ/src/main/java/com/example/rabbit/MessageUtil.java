@@ -1,7 +1,9 @@
 package com.example.rabbit;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
@@ -26,7 +28,14 @@ public class MessageUtil implements RabbitTemplate.ReturnCallback, RabbitTemplat
     }
 
     public void sendMsg4Peer(String trialNo, Object message) {
-        rabbitTemplate.convertAndSend(RabbitConsts.TOPIC_PEER_EXCHANGE, RabbitConsts.TOPIC_PEER_ROUTING_KEY.replace("#", trialNo), message, new CorrelationData(UUID.randomUUID().toString()));
+        rabbitTemplate.convertAndSend(RabbitConsts.TOPIC_PEER_EXCHANGE, RabbitConsts.TOPIC_PEER_ROUTING_KEY.replace("#", trialNo), message, new MessagePostProcessor() {
+            @Override
+            public Message postProcessMessage(Message message) throws AmqpException {
+                String peer_uuid = UUID.randomUUID().toString();
+                message.getMessageProperties().setHeader("PEER_UUID", peer_uuid);
+                return message;
+            }
+        });
     }
 
     public void sendMsg4Channel(String trialId, Object message) {

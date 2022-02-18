@@ -24,6 +24,8 @@ public class PeerMessageHandler implements ChannelAwareMessageListener {
     @Override
     public void onMessage(Message message, Channel channel) throws Exception {
         long deliveryTag = message.getMessageProperties().getDeliveryTag();
+        //消息唯一标识，做消息幂等
+        String peer_uuid = message.getMessageProperties().getHeader("PEER_UUID").toString();
         try {
             String consumerQueue = message.getMessageProperties().getConsumerQueue();
             String routingKey = message.getMessageProperties().getReceivedRoutingKey();
