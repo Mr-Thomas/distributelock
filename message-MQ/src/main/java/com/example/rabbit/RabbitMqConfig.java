@@ -249,6 +249,12 @@ public class RabbitMqConfig {
         return new DirectExchange(RabbitConsts.DIRECT_DEAD_EXCHANGE, true, false);
     }
 
+    /**
+     * 消息死信原因
+     * 1.消息被拒绝（消息消费时，应答拒绝）
+     * 2.消息过期 （仅过期队列内的消息才会投递到死信队列，针对单条消息过期不会进入）
+     * 3.队列达到最大长度
+     */
     // 2.声明创建队列——死信队列
     @Bean
     public Queue deadQueue() {
@@ -271,9 +277,11 @@ public class RabbitMqConfig {
     // 2.声明创建过期队列
     @Bean
     public Queue TTLQueue() {
-        // 2.1 设置过期队列——该队列内的所有消息过期时间为5秒
         Map<String, Object> map = new HashMap<>();
+        // 2.1 设置过期队列——该队列内的所有消息过期时间为5秒，过期的消息会被重新投递到死信队列。
         map.put("x-message-ttl", 5000);
+        //设置最大长度【消息条数】——当前队列最大长度5，超出过期队列设置的最大长度5，剩下的消息都会自动被投递到死信队列。
+        //map.put("x-max-length",5);
         // 2.2 设置消息接盘侠：消息过期后，不自动删除，而是将消息重新路由到direct.dead.exchange交换机
         map.put("x-dead-letter-exchange", RabbitConsts.DIRECT_DEAD_EXCHANGE);
         // 2.3 设置消息接盘侠的具体路由key
