@@ -124,6 +124,13 @@ public class RabbitMqConfig {
         return new DirectExchange(RabbitConsts.DIRECT_MODE_QUEUE);
     }
 
+    /**
+     * direct模式
+     *
+     * @param directOneQueue
+     * @param directExchange
+     * @return
+     */
     @Bean
     public Binding directBinding(Queue directOneQueue, DirectExchange directExchange) {
         return BindingBuilder.bind(directOneQueue).to(directExchange).with(RabbitConsts.DIRECT_ROUTING_KEY);
@@ -138,7 +145,7 @@ public class RabbitMqConfig {
     }
 
     /**
-     * 分列模式绑定队列1
+     * fanout模式
      *
      * @param directOneQueue 绑定队列1
      * @param fanoutExchange 分列模式交换器
@@ -160,7 +167,7 @@ public class RabbitMqConfig {
     }
 
     /**
-     * 主题模式队列
+     * Topic模式队列
      * <li>路由格式必须以 . 分隔，比如 user.email 或者 user.aaa.email</li>
      * <li>通配符 * ，代表一个占位符，或者说一个单词，比如路由为 user.*，那么 user.email 可以匹配，但是 user.aaa.email 就匹配不了</li>
      * <li>通配符 # ，代表一个或多个占位符，或者说一个或多个单词，比如路由为 user.#，那么 user.email 可以匹配，user.aaa.email 也可以匹配</li>
@@ -218,12 +225,14 @@ public class RabbitMqConfig {
 //    @Bean
     public CustomExchange delayExchange() {
         Map<String, Object> args = Maps.newHashMap();
+        //延迟消息类型：direct、topic、fanout
         args.put("x-delayed-type", "direct");
         return new CustomExchange(RabbitConsts.DELAY_MODE_QUEUE, "x-delayed-message", true, false, args);
     }
 
     /**
      * 延迟队列绑定自定义交换器
+     * 需下载安装延迟插件rabbitmq-plugins enable rabbitmq_delayed_message_exchange
      *
      * @param delayQueue    队列
      * @param delayExchange 延迟交换器
