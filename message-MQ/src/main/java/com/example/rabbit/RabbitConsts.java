@@ -12,6 +12,13 @@ public interface RabbitConsts {
     String DIRECT_MODE_QUEUE_ONE = "queue.direct.1";
 
     /**
+     * DIRECT模式死信队列
+     */
+    String DIRECT_DEAD_QUEUE = "direct.dead.queue";
+    String DIRECT_DEAD_EXCHANGE = "direct.dead.exchange";
+    String DIRECT_DEAD_ROUTING_KEY = "direct.dead.routing.key";
+
+    /**
      * 队列2
      */
     String QUEUE_TWO = "queue.2";

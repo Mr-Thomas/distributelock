@@ -22,6 +22,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -240,6 +241,51 @@ public class RabbitMqConfig {
 //    @Bean
     public Binding delayBinding(Queue delayQueue, CustomExchange delayExchange) {
         return BindingBuilder.bind(delayQueue).to(delayExchange).with(RabbitConsts.DELAY_QUEUE).noargs();
+    }
+
+    // 1.声明创建direct路由模式的死信队列交换机
+    @Bean
+    public DirectExchange deadExchange() {
+        return new DirectExchange(RabbitConsts.DIRECT_DEAD_EXCHANGE, true, false);
+    }
+
+    // 2.声明创建队列——死信队列
+    @Bean
+    public Queue deadQueue() {
+        return new Queue(RabbitConsts.DIRECT_DEAD_QUEUE, true);
+    }
+
+    // 3.绑定交换机与队列的关系，并设置交换机与队列之间的BindingKey
+    @Bean
+    public Binding deadBinding(Queue deadQueue, DirectExchange deadExchange) {
+        // 只有投递消息时指定的RoutingKey与这个BindingKey（direct.dead.routing.key）匹配上，消息才会被投递到该队列
+        return BindingBuilder.bind(deadQueue).to(deadExchange).with(RabbitConsts.DIRECT_DEAD_ROUTING_KEY);
+    }
+
+    // 1.声明创建direct路由模式的交换机
+    @Bean
+    public DirectExchange getDirectExchange() {
+        return new DirectExchange("direct_Exchange", true, false);
+    }
+
+    // 2.声明创建过期队列
+    @Bean
+    public Queue TTLQueue() {
+        // 2.1 设置过期队列——该队列内的所有消息过期时间为5秒
+        Map<String, Object> map = new HashMap<>();
+        map.put("x-message-ttl", 5000);
+        // 2.2 设置消息接盘侠：消息过期后，不自动删除，而是将消息重新路由到direct.dead.exchange交换机
+        map.put("x-dead-letter-exchange", RabbitConsts.DIRECT_DEAD_EXCHANGE);
+        // 2.3 设置消息接盘侠的具体路由key
+        map.put("x-dead-letter-routing-key", RabbitConsts.DIRECT_DEAD_ROUTING_KEY); // 如果是fanout模式的死信队列，则这里不需要设置投递的RoutingKey
+        return new Queue("TTLQueue", true, false, false, map);
+    }
+
+    // 3.绑定交换机与队列的关系，并设置交换机与队列之间的BindingKey
+    @Bean
+    public Binding getBinding_Queue_TTL() {
+        // 只有投递消息时指定的RoutingKey与这个BindingKey（ttl）匹配上，消息才会被投递到TTLQueue队列
+        return BindingBuilder.bind(TTLQueue()).to(getDirectExchange()).with("ttl");
     }
 
 
