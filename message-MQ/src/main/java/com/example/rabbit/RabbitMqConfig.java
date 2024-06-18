@@ -222,6 +222,8 @@ public class RabbitMqConfig {
 
     /**
      * 延迟队列交换器, x-delayed-type 和 x-delayed-message 固定
+     * 延迟消息的插件delayed_message_exchange
+     * rabbitmq-plugins enable rabbitmq_delayed_message_exchange
      */
 //    @Bean
     public CustomExchange delayExchange() {
